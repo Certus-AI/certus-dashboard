@@ -7,16 +7,16 @@ import { usePathname } from 'next/navigation';
 
 const navigationItems = [
   {
-    id: 'home',
+    id: 'overview',
     href: '/overview',
     icon: 'House',
-    label: 'Home',
+    label: 'Overview',
   },
   {
-    id: 'analytics',
-    href: '/analytics',
-    icon: 'AlignLeft',
-    label: 'Analytics',
+    id: 'metrics',
+    href: '/metrics',
+    icon: 'ChartLineUp',
+    label: 'Metrics',
   },
   {
     id: 'call-logs',
@@ -26,9 +26,15 @@ const navigationItems = [
   },
   {
     id: 'settings',
-    href: '/configuration',
+    href: '/settings',
     icon: 'GearSix',
     label: 'Settings',
+  },
+  {
+    id: 'support',
+    href: '/support',
+    icon: 'Question',
+    label: 'Support',
   },
 ];
 
@@ -38,14 +44,13 @@ export function Sidebar() {
 
   return (
     <aside
-      className="flex flex-col w-20 h-screen items-center gap-10 px-4 py-8 bg-variable-collection-colors-primary-color"
-      data-variable-collection-mode="white"
+      className="flex flex-col w-20 h-screen items-center gap-8 px-4 py-8 bg-white border-r border-gray-200"
       role="navigation"
       aria-label="Main navigation"
     >
       {/* Toggle Button */}
       <button
-        className="w-3.5 h-3.5"
+        className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-50 transition-colors duration-150"
         aria-label="Toggle sidebar"
         type="button"
         onClick={() => setIsCollapsed(!isCollapsed)}
@@ -55,54 +60,54 @@ export function Sidebar() {
           alt=""
           width={14}
           height={14}
-          className="w-3.5 h-3.5"
+          className="w-3.5 h-3.5 opacity-40"
         />
       </button>
 
       {/* Logo */}
-      <div className="w-5 h-[27px]">
+      <div className="w-10 h-10 flex items-center justify-center">
         <Image
-          src="/icons/image.svg"
-          alt="Certus logo"
-          width={20}
-          height={27}
-          className="w-5 h-[27px]"
+          src="/Logo.svg"
+          alt="Certus"
+          width={40}
+          height={40}
+          className="w-10 h-10"
         />
       </div>
 
       {/* Navigation Items */}
-      <nav className="inline-flex flex-col items-center gap-2">
+      <nav className="flex flex-col items-center gap-2 flex-1">
         {navigationItems.map((item) => {
           const isActive = pathname === item.href;
 
           return (
-            <div
+            <Link
               key={item.id}
-              className={
+              href={item.href}
+              className={`group relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-200 ${
                 isActive
-                  ? 'inline-flex items-center gap-2.5 p-0.5 bg-variable-collection-inner-box rounded-[10px]'
-                  : 'inline-flex items-center justify-center gap-2.5 p-2 rounded-[var(--variable-collection-radius-small-radius)] bg-variable-collection-colors-a-shade1'
-              }
+                  ? 'bg-gradient-to-br from-red-500 to-pink-600 shadow-lg shadow-red-500/20'
+                  : 'hover:bg-gray-50'
+              }`}
+              aria-label={item.label}
+              aria-current={isActive ? 'page' : undefined}
             >
-              <Link
-                href={item.href}
-                className={
-                  isActive
-                    ? 'inline-flex gap-2.5 p-2 bg-variable-collection-colors-candy-20 rounded-lg shadow-[inset_0px_0px_4.3px_#bf001b,inset_1px_0_0_rgba(255,255,255,0.32),inset_-1px_0_33px_rgba(0,0,0,0.16)] backdrop-blur-[50.0px] items-center'
-                    : 'inline-flex items-center justify-center gap-2.5'
-                }
-                aria-label={item.label}
-                aria-current={isActive ? 'page' : undefined}
-              >
-                <Image
-                  src={`/icons/${item.icon}.svg`}
-                  alt=""
-                  width={24}
-                  height={24}
-                  className="w-6 h-6"
-                />
-              </Link>
-            </div>
+              <Image
+                src={`/icons/${item.icon}.svg`}
+                alt=""
+                width={22}
+                height={22}
+                className={`w-5.5 h-5.5 transition-all duration-200 ${
+                  isActive ? 'opacity-100' : 'opacity-40 group-hover:opacity-70'
+                }`}
+                style={isActive ? { filter: 'brightness(0) invert(1)' } : {}}
+              />
+
+              {/* Active indicator */}
+              {isActive && (
+                <div className="absolute -right-4 w-1 h-8 bg-gradient-to-b from-red-500 to-pink-600 rounded-l-full" />
+              )}
+            </Link>
           );
         })}
       </nav>

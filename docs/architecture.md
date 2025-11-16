@@ -3,9 +3,10 @@
 **Version:** 1.0  
 **Last updated:** 2025-09-25  
 **Owner:** Backend Architect + Product Owner  
-**Related docs:**  
-- `docs/prd.md` (v1.1, unified PRD)  
-- `.claude/agents/*` (local agent definitions)  
+**Related docs:**
+- `docs/prd.md` (v1.1, unified PRD)
+- `docs/auth/authentication.md` (Auth system documentation)
+- `.claude/agents/*` (local agent definitions)
 - `supabase/schema.sql`, `supabase/policies.sql`, `supabase/seed.sql`  
 
 ---

@@ -1,0 +1,41 @@
+'use client'
+
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
+import { Button } from '@/components/ui/button'
+import { LogOut } from 'lucide-react'
+
+interface SignOutButtonProps {
+  variant?: 'default' | 'ghost' | 'outline'
+  size?: 'default' | 'sm' | 'lg' | 'icon'
+  showIcon?: boolean
+  children?: React.ReactNode
+}
+
+export function SignOutButton({
+  variant = 'ghost',
+  size = 'default',
+  showIcon = true,
+  children
+}: SignOutButtonProps) {
+  const router = useRouter()
+  const supabase = createClient()
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut()
+    router.push('/login')
+    router.refresh()
+  }
+
+  return (
+    <Button
+      onClick={handleSignOut}
+      variant={variant}
+      size={size}
+      className="gap-2"
+    >
+      {showIcon && <LogOut className="h-4 w-4" />}
+      {children || 'Sign Out'}
+    </Button>
+  )
+}

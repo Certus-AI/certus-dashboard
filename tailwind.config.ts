@@ -83,7 +83,7 @@ const config: Config = {
   			'accent-font': 'var(--accent-font-font-family)',
   			'primary-font': 'var(--primary-font-font-family)',
   			'secondary-font': 'var(--secondary-font-font-family)',
-  			sans: ['Inter Tight', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+  			sans: ['var(--font-inter-tight)', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
   		},
   		boxShadow: {
   			cardshadownew: 'var(--cardshadownew)',

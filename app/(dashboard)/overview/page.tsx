@@ -13,68 +13,56 @@ import {
 } from '@/lib/mock-data';
 
 export default function OverviewPage() {
-  const [activeTimeFilter, setActiveTimeFilter] = useState<TimeFilter>('all');
+  const [activeTimeFilter, setActiveTimeFilter] = useState<TimeFilter>('today');
 
   return (
-    <div className="flex flex-col items-start gap-8 px-7 py-6 flex-1 w-full">
+    <div className="flex flex-col gap-6 px-8 py-6 flex-1 w-full">
       {/* Time Filter Tabs */}
-      <div className="flex flex-col items-start gap-4 w-full">
-        <div className="inline-flex items-center gap-2 p-1 bg-white rounded-[var(--variable-collection-radius-small-radius)] shadow-[0px_1px_3px_#00000005,0px_6px_6px_#00000005,0px_13px_8px_#00000003,0px_24px_10px_transparent,0px_37px_10px_transparent]">
-          {timeFilterOptions.map((filter) =>
-            filter.id === activeTimeFilter ? (
-              <button
-                key={filter.id}
-                onClick={() => setActiveTimeFilter(filter.id)}
-                className="flex flex-col w-20 items-center justify-center gap-4 px-6 py-1.5 bg-[#ef345008] rounded-lg border-[0.5px] border-variable-collection-colors-a-shade4"
-              >
-                <div className="font-['Inter_Tight'] font-medium text-[#ee344f] text-xs text-center leading-normal">
-                  {filter.label}
-                </div>
-              </button>
-            ) : (
-              <button
-                key={filter.id}
-                onClick={() => setActiveTimeFilter(filter.id)}
-                className="flex w-20 items-center justify-center gap-2.5"
-              >
-                <div className="font-['Inter_Tight'] font-normal text-[#747577] text-[10px] text-center leading-normal whitespace-nowrap">
-                  {filter.label}
-                </div>
-              </button>
-            ),
-          )}
-        </div>
+      <div className="inline-flex items-center gap-1 p-1 bg-gray-100 rounded-lg w-fit">
+        {timeFilterOptions.map((filter) => (
+          <button
+            key={filter.id}
+            onClick={() => setActiveTimeFilter(filter.id)}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-150 ${
+              filter.id === activeTimeFilter
+                ? 'bg-white text-gray-900 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            {filter.label}
+          </button>
+        ))}
+      </div>
 
-        {/* KPI Section & Quick Actions */}
-        <div className="flex items-start gap-4 w-full">
-          {/* KPI Tiles Grid */}
-          <div className="flex flex-col items-end gap-2.5 flex-1">
-            {/* Top Row - 3 KPIs */}
-            <div className="flex h-[140px] items-start gap-2.5 w-full">
-              {mockKPIData.slice(0, 3).map((kpi) => (
-                <KPITile key={kpi.id} {...kpi} />
-              ))}
-            </div>
-
-            {/* Bottom Row - 3 KPIs */}
-            <div className="flex h-[140px] items-start gap-2.5 w-full">
-              {mockKPIData.slice(3, 6).map((kpi) => (
-                <KPITile key={kpi.id} {...kpi} />
-              ))}
-            </div>
+      {/* KPI Section & Quick Actions */}
+      <div className="flex items-start gap-6 w-full">
+        {/* KPI Tiles Grid */}
+        <div className="flex flex-col gap-4 flex-1">
+          {/* Top Row - Revenue (larger) + 2 KPIs */}
+          <div className="grid grid-cols-[1.3fr_1fr_1fr] gap-4">
+            {mockKPIData.slice(0, 3).map((kpi) => (
+              <KPITile key={kpi.id} {...kpi} />
+            ))}
           </div>
 
-          {/* Quick Actions Card */}
-          <div className="flex flex-col w-[362px] h-72 items-end gap-6 p-5 bg-variable-collection-colors-white rounded-[var(--variable-collection-radius-small-radius)] border-[0.5px] border-variable-collection-colors-p-shade6 shadow-[0px_1px_3px_#00000005,0px_6px_6px_#00000005,0px_13px_8px_#00000003,0px_24px_10px_transparent,0px_37px_10px_transparent]">
-            <h2 className="font-['Inter_Tight'] font-normal text-variable-collection-colors-primary-color text-xl leading-normal w-full">
-              Quick Actions
-            </h2>
+          {/* Bottom Row - 3 KPIs */}
+          <div className="grid grid-cols-3 gap-4">
+            {mockKPIData.slice(3, 6).map((kpi) => (
+              <KPITile key={kpi.id} {...kpi} />
+            ))}
+          </div>
+        </div>
 
-            <div className="flex flex-col items-start gap-2.5 flex-1 w-full">
-              {mockQuickActions.map((action) => (
-                <QuickActionCard key={action.id} {...action} />
-              ))}
-            </div>
+        {/* Quick Actions Card */}
+        <div className="flex flex-col w-80 gap-4 p-6 bg-white rounded-xl border border-gray-100 shadow-sm">
+          <h2 className="text-lg font-semibold text-gray-900">
+            Quick Actions
+          </h2>
+
+          <div className="flex flex-col gap-2">
+            {mockQuickActions.map((action) => (
+              <QuickActionCard key={action.id} {...action} />
+            ))}
           </div>
         </div>
       </div>

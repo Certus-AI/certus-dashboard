@@ -17,6 +17,7 @@ export interface QuickAction {
   icon: string;
   title: string;
   description: string;
+  badge?: string;
   onClick?: () => void;
 }
 
@@ -34,61 +35,85 @@ export interface RecentActivity {
 
 export const mockKPIData: KPIData[] = [
   {
-    id: 'total-calls',
-    icon: 'Phone',
-    label: 'Total Calls',
-    value: '480 Calls',
-  },
-  {
     id: 'total-revenue',
     icon: 'CreditCard',
     label: 'Total Revenue',
-    value: '$4,000.00',
+    value: '$4,247.50',
+    trend: {
+      direction: 'up',
+      value: '+18%',
+    },
   },
   {
-    id: 'minutes-saved',
-    icon: 'ClockCountdown',
-    label: 'Minutes Saved',
-    value: '440 Mins',
+    id: 'total-calls',
+    icon: 'Phone',
+    label: 'Total Calls',
+    value: '127',
+    trend: {
+      direction: 'up',
+      value: '+12%',
+    },
   },
   {
     id: 'orders-placed',
     icon: 'ListDashes',
     label: 'Orders Placed',
-    value: '1,640 Orders',
+    value: '89',
+    trend: {
+      direction: 'up',
+      value: '+15%',
+    },
   },
   {
     id: 'reservations-booked',
     icon: 'CallBell',
-    label: 'Reservations Booked',
-    value: '1,336 Reservations',
+    label: 'Reservations',
+    value: '23',
+    trend: {
+      direction: 'up',
+      value: '+5',
+    },
   },
   {
     id: 'upsells-attempted',
     icon: 'TrendUp',
-    label: 'Total Upsell Attempted',
-    value: '1,577 Upsells',
+    label: 'Upsells',
+    value: '61',
+    trend: {
+      direction: 'up',
+      value: '+22%',
+    },
+  },
+  {
+    id: 'minutes-saved',
+    icon: 'ClockCountdown',
+    label: 'Time Saved',
+    value: '2.4 hrs',
+    trend: {
+      direction: 'up',
+      value: '+8%',
+    },
   },
 ];
 
 export const mockQuickActions: QuickAction[] = [
   {
-    id: 'change-voice',
-    icon: 'UserSound',
-    title: 'Change AI voice',
-    description: 'Customize how your AI sounds',
+    id: 'update-menu',
+    icon: 'Brain',
+    title: 'Update menu',
+    description: 'Add new items to AI knowledge',
   },
   {
     id: 'update-hours',
     icon: 'Clock',
     title: 'Update hours',
-    description: 'Adjust your business hours fast',
+    description: 'Set holiday or special hours',
   },
   {
-    id: 'update-knowledge',
-    icon: 'Brain',
-    title: 'Update knowledge',
-    description: 'Refresh your AI with new info',
+    id: 'view-analytics',
+    icon: 'AlignLeft',
+    title: 'View detailed analytics',
+    description: 'See full performance report',
   },
 ];
 

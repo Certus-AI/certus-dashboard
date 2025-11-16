@@ -2,6 +2,15 @@
 
 import React from 'react';
 import Image from 'next/image';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { SignOutButton } from '@/components/auth/sign-out-button';
 
 interface DashboardHeaderProps {
   greeting: string;
@@ -9,50 +18,73 @@ interface DashboardHeaderProps {
   userName?: string;
 }
 
-export function DashboardHeader({ greeting, subtitle, userName = 'CW' }: DashboardHeaderProps) {
+export function DashboardHeader({ greeting, subtitle, userName = 'GV' }: DashboardHeaderProps) {
   return (
-    <header className="flex items-center gap-2 px-7 py-5 w-full bg-white">
-      <div className="flex flex-col items-start gap-2 flex-1">
-        <h1 className="font-['Inter_Tight'] font-medium text-variable-collection-colors-primary-color text-2xl leading-normal">
+    <header className="flex items-center gap-4 px-8 py-6 w-full bg-white border-b border-gray-100">
+      <div className="flex flex-col gap-1 flex-1">
+        <h1 className="text-2xl font-bold text-gray-900">
           {greeting}
         </h1>
-
-        <p className="font-['Inter_Tight'] font-normal text-variable-collection-colors-s-shade5 text-base leading-normal">
+        <p className="text-sm text-gray-500">
           {subtitle}
         </p>
       </div>
 
-      <div className="inline-flex items-center gap-4">
+      <div className="flex items-center gap-3">
         {/* Referral Banner */}
         <button
-          className="inline-flex items-center gap-2 px-3 py-2 bg-white rounded-[var(--variable-collection-radius-small-radius)] border-[0.5px] border-[#ffdadf] shadow-[0px_1px_3px_#00000005,0px_6px_6px_#00000005,0px_13px_8px_#00000003,0px_24px_10px_transparent,0px_37px_10px_transparent] cursor-pointer hover:bg-gray-50 transition-colors duration-120"
+          className="group inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-50 to-pink-50 hover:from-red-100 hover:to-pink-100 rounded-lg border border-red-100 transition-all duration-150"
           aria-label="Refer a friend and earn £200"
         >
-          <p className="font-['Inter_Tight'] font-normal text-sm leading-normal">
-            <span className="text-[#ee344f]">Earn £200 </span>
-            <span className="text-[#747577]">Refer a Friend</span>
+          <p className="text-sm">
+            <span className="font-semibold text-red-600">Earn £200</span>
+            <span className="text-gray-600 ml-1">Refer a Friend</span>
           </p>
-
-          <div className="w-2.5 h-2.5" aria-hidden="true">
+          <div className="w-4 h-4 opacity-40 group-hover:opacity-60 transition-opacity" aria-hidden="true">
             <Image
               src="/icons/vector.svg"
               alt=""
-              width={10}
-              height={10}
+              width={16}
+              height={16}
               className="w-full h-full"
             />
           </div>
         </button>
 
-        {/* User Avatar */}
+        {/* Notifications Bell */}
         <button
-          className="flex w-[35px] h-[35px] items-center justify-center gap-2.5 p-2 bg-variable-collection-colors-a-shade1 rounded-[56px] border border-[#ffb9c3] cursor-pointer hover:bg-[#ffe5e9] transition-colors duration-120"
-          aria-label={`User profile: ${userName}`}
+          className="relative flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-50 transition-colors duration-150"
+          aria-label="Notifications"
         >
-          <span className="font-['Inter_Tight'] font-normal text-variable-collection-colors-secondary-color text-xs leading-normal whitespace-nowrap uppercase">
-            {userName}
-          </span>
+          <Image
+            src="/icons/Bell.svg"
+            alt=""
+            width={20}
+            height={20}
+            className="w-5 h-5 opacity-60"
+          />
+          {/* Notification badge */}
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
         </button>
+
+        {/* User Avatar with Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              className="flex w-10 h-10 items-center justify-center bg-gradient-to-br from-red-500 to-pink-600 rounded-full text-white font-semibold text-sm hover:shadow-lg hover:shadow-red-500/30 transition-all duration-150"
+              aria-label={`User profile: ${userName}`}
+            >
+              {userName}
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <SignOutButton variant="ghost" showIcon={true} />
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );

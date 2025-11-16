@@ -1,11 +1,19 @@
 # Certus Operations Dashboard — Product Requirements Document (PRD)
 
-**Version:** 1.1 (Unified)  
-**Previous version:** 1.0 (2025-09-25)  
-**Date:** 2025-09-25  
-**Author:** Certus Product Architect GPT  
-**Approver:** TBD (you)  
-**Time zone (analytics & ops):** Africa/Johannesburg  
+**Version:** 1.2 (Unified + Design System)
+**Previous version:** 1.1 (2025-09-25), 1.0 (2025-09-25)
+**Date:** 2025-11-15
+**Author:** Certus Product Architect GPT
+**Approver:** TBD (you)
+**Time zone (analytics & ops):** Africa/Johannesburg
+**Design source:** Figma export (Overview page) + design tokens
+
+**Related Documentation:**
+- `docs/ui/tokens.json` — Design tokens from Figma
+- `docs/ui/components_map.md` — Component implementation mapping
+- `docs/ui/IMPLEMENTATION_STATUS.md` — Current progress and patterns
+- `docs/ui/interaction_specs.md` — Micro-interactions and animations
+- `docs/architecture.md` — Technical architecture  
 
 ---
 
@@ -114,11 +122,28 @@ As a **restaurant operator** (or Certus ops agent), I want to:
 
 ### 2.2 Primary User Stories
 
-- **US-001 (Overview KPIs)**  
-  As an operator, I see KPI tiles (`total_calls`, `total_revenue`, `minutes_saved`, `orders_placed`, `reservations_booked`) for a selected date range, defaulting to the **last 7 days**.
+- **US-001 (Overview KPIs)** ✅ **IMPLEMENTED**
+  As an operator, I see 6 KPI tiles with trends for a selected time range, defaulting to **Today**:
+  - Total Revenue (emphasized, 30% larger)
+  - Total Calls
+  - Orders Placed
+  - Reservations
+  - Upsells
+  - Time Saved
 
-- **US-002 (Recent Calls)**  
-  As an operator, I review a table of recent calls with **call_type** as the first column (instead of caller ID) and can deep-link to the call details view.
+  Each tile shows current value and trend comparison (e.g., "+18%")
+
+- **US-002 (Recent Calls)** ✅ **IMPLEMENTED**
+  As an operator, I see a modern table of recent activities showing:
+  - Time (with health indicator dot)
+  - Call type (icon + label)
+  - Summary
+  - Type
+  - Call Health (success/warning/error)
+  - From (phone number)
+  - Duration
+
+  Clicking a row navigates to Call Logs with that call's details.
 
 - **US-003 (Call Detail Drawer)**  
   As an operator, I open a call’s drawer and see:
@@ -164,11 +189,17 @@ Then a CSV downloads containing daily metrics for the range
 
 ### 3.1 In-Scope (Initial MVP Tranche)
 
-1. **Overview Page**
-   - KPI tiles (5 core metrics) for selected date range.
-   - Recent Activities table:
-     - `call_type` as first column (with icon + label).
-     - Deep-link into Call Logs and open call detail drawer.
+1. **Overview Page** ✅ **COMPLETED**
+   - 6 KPI tiles with trend indicators for selected time range
+   - Revenue tile is emphasized (30% larger, gradient background)
+   - Time filter tabs (All/Today/Last 24h/Yesterday), default: Today
+   - Quick Actions sidebar (Update menu, Update hours, View analytics)
+   - Recent Activities table with modern grid-based design:
+     - Health indicator dots
+     - Call type icons
+     - Clickable rows that navigate to Call Logs
+   - Fully responsive layout
+   - Clean, scannable design optimized for restaurant owners
 
 2. **Call Logs Page**
    - Filterable, paginated call table (server-side).
@@ -230,6 +261,101 @@ Then a CSV downloads containing daily metrics for the range
   - Advanced RBAC and multi-tenant billing configs.
   - Operational runbooks and more advanced observability.
   - Full POS read/write integration.
+
+---
+
+## 3.4) Design System & UI Implementation
+
+### 3.4.1 Design Philosophy
+
+The Certus Operations Dashboard is designed with **restaurant owners** as the primary user:
+
+**Key Principles:**
+1. **Revenue First** — Money metrics are always prominent and emphasized
+2. **Today Focused** — Default time range is "Today" (not "All time")
+3. **Scannable at a Glance** — Critical info visible in 3 seconds or less
+4. **Clean & Modern** — Minimal, professional aesthetic with purposeful use of color
+5. **Actionable** — Every element should guide toward a clear action
+
+### 3.4.2 Visual Design System
+
+**Typography:**
+- **Font Family:** Inter Tight (Google Fonts)
+- **Weights:** 300 (light), 400 (normal), 500 (medium), 600 (semibold), 700 (bold)
+- **Scale:** Follows design tokens in `docs/ui/tokens.json`
+
+**Color Palette:**
+- **Primary Accent:** Red-500 (#EF3450) to Pink-600 gradient
+  - Used sparingly for: Revenue emphasis, active nav states, primary actions
+- **Success:** Emerald-500/600 (green) for positive metrics and "up" trends
+- **Warning:** Amber-500 for attention-needed states
+- **Error:** Red-500/600 for failures and "down" trends
+- **Neutral:** Gray scale (50-900) for text, backgrounds, borders
+
+**Component Patterns:**
+- **Cards:** `bg-white rounded-xl border border-gray-100 shadow-sm`
+- **Page Background:** `bg-gray-50`
+- **Hover Effects:** Subtle shadow enhancement, 150-200ms transitions
+- **Active States:** Gradient backgrounds with shadow indicators
+
+### 3.4.3 Implementation Status
+
+**✅ Completed (Phase 1):**
+
+**Pages:**
+- ✅ Overview Page — Fully functional with all components
+
+**Components:**
+- ✅ `Sidebar` — Navigation with white theme, active states
+- ✅ `DashboardHeader` — Greeting, referral banner, user avatar
+- ✅ `KPITile` — Metric display with trends, auto-highlights revenue
+- ✅ `QuickActionCard` — Action buttons with gradient badges
+- ✅ `RecentActivitiesTable` — Modern grid-based call log preview
+- ✅ `FilterTabs` — Time range selector (All/Today/Last 24h/Yesterday)
+
+**Design Decisions:**
+1. Revenue tile is 30% larger than others (`grid-cols-[1.3fr_1fr_1fr]`)
+2. Revenue always appears first in KPI order
+3. Revenue gets automatic gradient highlight background
+4. Default time filter is "Today"
+5. Metric values are simplified (127 vs "127 Calls")
+6. Trend labels are concise ("+18%" vs "+18% vs last week")
+7. All KPIs show trend indicators with color coding
+
+**📋 Remaining (Phase 2):**
+- 🔲 Call Logs Page — Table + filters + drawer
+- 🔲 Analytics Page — Charts + export
+- 🔲 Configuration Page — Settings forms
+
+**Implementation Guides:**
+- See `docs/ui/IMPLEMENTATION_STATUS.md` for reusable patterns
+- See `docs/ui/components_map.md` for component specifications
+
+### 3.4.4 Restaurant Owner UX Optimizations
+
+Based on restaurant operator needs, these UX decisions have been implemented:
+
+1. **Revenue Prominence**
+   - Larger tile size (30% bigger)
+   - Gradient background highlighting
+   - First position in layout
+   - Bold, large value display
+
+2. **Today-Centric View**
+   - "Today" is default time filter (not "All")
+   - Recent activities show today's calls prominently
+   - Quick metrics focus on current performance
+
+3. **Quick Scanning**
+   - Health indicators use color dots (green/amber/red)
+   - Trend arrows show direction at a glance
+   - Call types have icons for instant recognition
+   - No clutter or unnecessary decoration
+
+4. **Actionable Quick Actions**
+   - "Update menu" (most common task)
+   - "Update hours" (seasonal changes)
+   - "View detailed analytics" (deeper insights)
 
 ---
 
