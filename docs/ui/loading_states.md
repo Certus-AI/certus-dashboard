@@ -6,7 +6,7 @@
 
 **Related Docs:**
 - [components_map.md](./components_map.md) — Component implementation mapping
-- [IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md) — Current progress and patterns
+- [component_patterns.md](./component_patterns.md) — Current progress and patterns
 - [interaction_specs.md](./interaction_specs.md) — Animation specifications
 
 ---
@@ -598,7 +598,7 @@ export function Component({ data, isLoading }: Props) {
 ### Related Docs
 
 - [components_map.md](./components_map.md) — Component specifications
-- [IMPLEMENTATION_STATUS.md](./IMPLEMENTATION_STATUS.md) — Implementation progress
+- [component_patterns.md](./component_patterns.md) — Implementation progress
 - [interaction_specs.md](./interaction_specs.md) — Animation guidelines
 
 ---

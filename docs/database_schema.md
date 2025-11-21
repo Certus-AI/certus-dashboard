@@ -486,6 +486,12 @@ CREATE TABLE IF NOT EXISTS public.account_settings (
   -- Default average spend per head for reservation revenue estimation
   avg_spend_per_head NUMERIC(10, 2) NULL,
 
+  -- User management permissions
+  user_creation_permission_level INTEGER NULL DEFAULT 5,
+    -- Minimum role_id required to create new users
+    -- Default: 5 (only owners can create users)
+    -- Set lower to allow managers/regional managers to create users
+
   -- Timestamps
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -500,9 +506,11 @@ CREATE INDEX IF NOT EXISTS idx_account_settings_account_id
 - `minutes_saved_baseline_seconds` - Default baseline call duration (seconds) for calculating time saved. Default: 120s (2 minutes)
 - `revenue_mode` - How to calculate total revenue: `'orders_only'` or `'orders_plus_res_estimate'`
 - `avg_spend_per_head` - Default average spend per person for reservation revenue estimates
+- `user_creation_permission_level` - Minimum role_id required to create new users. Default: 5 (owners only)
 
 **Usage:**
-Used by `mv_metrics_daily` to calculate minutes_saved and reservation revenue estimates.
+- Used by `mv_metrics_daily` to calculate minutes_saved and reservation revenue estimates
+- Controls which roles can create new users in the account
 
 ---
 
@@ -536,6 +544,102 @@ CREATE INDEX IF NOT EXISTS idx_location_settings_location_id
 1. Location-specific override (`location_settings`)
 2. Account default (`account_settings`)
 3. Fallback default (120 seconds for minutes_saved)
+
+---
+
+### user_location_access
+
+**Purpose:** Junction table mapping users to specific locations within an account. Replaces the old email-based location access pattern for more flexibility.
+
+**Why we need this table:**
+- Allows one user to access multiple specific locations (not just one via email match)
+- Enables precise control over which locations a user can see data for
+- Supports franchise owners (access to all locations) and managers (access to specific locations)
+- Cleaner than email matching - explicit relationships instead of string comparisons
+
+```sql
+CREATE TABLE IF NOT EXISTS public.user_location_access (
+  id SERIAL PRIMARY KEY,
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  location_id UUID NOT NULL REFERENCES public.locations(location_id) ON DELETE CASCADE,
+  account_id UUID NOT NULL REFERENCES public.accounts(account_id) ON DELETE CASCADE,
+
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  created_by UUID REFERENCES auth.users(id),
+
+  UNIQUE(user_id, location_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_location_access_user
+  ON public.user_location_access(user_id);
+
+CREATE INDEX IF NOT EXISTS idx_user_location_access_location
+  ON public.user_location_access(location_id);
+
+CREATE INDEX IF NOT EXISTS idx_user_location_access_account
+  ON public.user_location_access(account_id);
+```
+
+**Key Fields:**
+- `user_id` - UUID of user in auth.users
+- `location_id` - Location this user can access
+- `account_id` - Account this location belongs to (denormalized for faster queries)
+- `created_by` - User who granted this access (for audit trail)
+
+**Usage Patterns:**
+
+**Owner (all locations):**
+```sql
+-- When creating owner, insert ALL locations for their account
+INSERT INTO user_location_access (user_id, location_id, account_id, created_by)
+SELECT
+  'new-owner-uuid',
+  location_id,
+  account_id,
+  'creator-uuid'
+FROM locations
+WHERE account_id = 'account-uuid';
+```
+
+**Manager (single location):**
+```sql
+-- When creating manager, insert just their location
+INSERT INTO user_location_access (user_id, location_id, account_id, created_by)
+VALUES ('new-manager-uuid', 'location-uuid', 'account-uuid', 'creator-uuid');
+```
+
+**Multi-location Manager:**
+```sql
+-- Manager with access to 3 specific locations
+INSERT INTO user_location_access (user_id, location_id, account_id, created_by)
+VALUES
+  ('user-uuid', 'location-1-uuid', 'account-uuid', 'creator-uuid'),
+  ('user-uuid', 'location-2-uuid', 'account-uuid', 'creator-uuid'),
+  ('user-uuid', 'location-3-uuid', 'account-uuid', 'creator-uuid');
+```
+
+**Query User's Locations:**
+```typescript
+const { data } = await supabase
+  .from('user_location_access')
+  .select(`
+    location_id,
+    account_id,
+    locations!inner (
+      location_id,
+      name,
+      certus_notification_email
+    )
+  `)
+  .eq('user_id', user.id)
+```
+
+**Migration from Old Pattern:**
+The old pattern used `locations.certus_notification_email` to match user emails. This table replaces that with explicit relationships, allowing:
+- One user → multiple locations (not possible with email matching)
+- Clear audit trail of who assigned access
+- Faster queries (indexed foreign keys vs string matching)
+- No ambiguity (explicit vs implicit relationships)
 
 ---
 

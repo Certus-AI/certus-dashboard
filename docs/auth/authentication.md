@@ -6,12 +6,80 @@
 
 ---
 
-## Overview
+## How Authentication Works
+
+### The Simple Version
+
+1. **User enters email** on login page
+2. **Server checks** if email exists in system AND has permissions
+3. **If valid**, we bypass magic link (dev mode) and sign user in directly
+4. **User is redirected** to dashboard with active session
+5. **Location access** is determined by user's role (franchise owner sees all locations, manager sees one)
+
+### The Implementation ([app/login/page.tsx](../../app/login/page.tsx))
+
+```typescript
+// 1. User submits email
+const normalizedEmail = email.toLowerCase().trim()
+
+// 2. Check if user exists AND has permissions (server action)
+const { exists, hasPermissions } = await checkUserExists(normalizedEmail)
+
+if (!exists) {
+  // Email not in auth.users
+  setMessage({ type: 'error', text: 'Email not found. Please contact your administrator.' })
+  return
+}
+
+if (!hasPermissions) {
+  // Email in auth.users but not in user_roles_permissions
+  setMessage({ type: 'error', text: 'No permissions assigned. Please contact your administrator.' })
+  return
+}
+
+// 3. User is valid - sign them in directly (bypass magic link in dev)
+if (BYPASS_MAGIC_LINK) {
+  const result = await signInDirectly(normalizedEmail)
+  router.push('/overview')
+}
+```
+
+### Server Actions ([app/login/actions.ts](../../app/login/actions.ts))
+
+**checkUserExists:**
+- Uses Supabase Admin API to check if email exists in `auth.users`
+- Queries `user_roles_permissions` to verify permissions are assigned
+- Returns `{ exists: boolean, hasPermissions: boolean }`
+
+**signInDirectly (dev mode):**
+- Generates a magic link token using Admin API
+- Immediately verifies the token to create session
+- Sets session cookies via SSR client
+- Bypasses email delivery (faster development)
+
+### What Happens After Login
+
+Once authenticated, the dashboard determines location access:
+
+**Franchise Owner** (role_permission_id = 5):
+- Email checked against `accounts.email`
+- Fetches ALL locations for that account
+- Shows location selector dropdown
+- Can switch via URL param `?locationId=123`
+
+**Single Location Manager:**
+- Email checked against `locations.certus_notification_email`
+- Gets ONE fixed location
+- No location selector shown
+
+---
+
+## Complete System Overview
 
 The Certus Operations Dashboard uses **Supabase Auth with Magic Links** for passwordless authentication, combined with a **Role-Based Access Control (RBAC)** system for granular permissions management.
 
 **Key Features:**
-- Passwordless magic link authentication
+- Passwordless magic link authentication (production) or direct sign-in (dev)
 - Pre-populated `auth.users` table (users must be added by admin)
 - Flexible role-permission mapping
 - Multiple permission sets per role

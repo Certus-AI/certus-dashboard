@@ -938,7 +938,7 @@ export interface RecentActivity {
 
 ## 📋 Implementation Guide for Remaining Pages
 
-See `IMPLEMENTATION_STATUS.md` for:
+See [component_patterns.md](./component_patterns.md) for:
 - Component reuse patterns
 - Data fetching patterns
 - Design principle guidelines

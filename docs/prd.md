@@ -11,7 +11,7 @@
 **Related Documentation:**
 - `docs/ui/tokens.json` — Design tokens from Figma
 - `docs/ui/components_map.md` — Component implementation mapping
-- `docs/ui/IMPLEMENTATION_STATUS.md` — Current progress and patterns
+- `docs/ui/component_patterns.md` — Current progress and patterns
 - `docs/ui/interaction_specs.md` — Micro-interactions and animations
 - `docs/architecture.md` — Technical architecture  
 
@@ -345,7 +345,7 @@ The Certus Operations Dashboard is designed with **restaurant owners** as the pr
 - 🔲 Configuration Page — Settings forms
 
 **Implementation Guides:**
-- See `docs/ui/IMPLEMENTATION_STATUS.md` for reusable patterns
+- See `docs/ui/component_patterns.md` for reusable patterns
 - See `docs/ui/components_map.md` for component specifications
 
 ### 3.4.4 Restaurant Owner UX Optimizations

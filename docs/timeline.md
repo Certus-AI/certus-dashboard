@@ -47,11 +47,11 @@
 
 ### **Nov 19–20 — Call Logs Base**
 
-- [ ]  Scaffold `/app/(dashboard)/call-logs/page.tsx`
-- [ ]  Build **server-paginated table** with filters (date, call_type, status)
-- [ ]  Create right-hand drawer component skeleton
-- [ ]  Manage filter state using Zustand
-- [ ]  Add `/lib/queries/calls.ts` for paginated fetches
+- [x]  Scaffold `/app/(dashboard)/call-logs/page.tsx`
+- [x]  Build **server-paginated table** with filters (date, call_type, status)
+- [x]  Create right-hand drawer component skeleton
+- [x]  Manage filter state using Zustand
+- [x]  Add `/lib/queries/calls.ts` for paginated fetches
 
 ---
 
